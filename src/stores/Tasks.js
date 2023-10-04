@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import { v4 as uuidv4 } from "uuid";
 
 export const useTaskStore = defineStore("taskStore", {
   state: () => ({
@@ -9,7 +10,7 @@ export const useTaskStore = defineStore("taskStore", {
   }),
   getters: {
     getTasks() {
-        return this.tasks;
+      return this.tasks;
     },
 
     getFavorites() {
@@ -22,6 +23,24 @@ export const useTaskStore = defineStore("taskStore", {
     },
     getTotalCount: (state) => {
       return state.tasks.length;
+    },
+  },
+  actions: {
+    addTask(title) {
+      this.tasks.push({
+        id: uuidv4(),
+        title,
+        isFav: false,
+      });
+    },
+
+    favoriteTask(id) {
+      const task = this.tasks.find((t) => t.id === id);
+      task.isFav = !task.isFav;
+    },
+
+    deleteTask(id) {
+      this.tasks = this.tasks.filter((t) => t.id !== id);
     },
   },
 });

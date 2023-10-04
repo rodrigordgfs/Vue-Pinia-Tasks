@@ -2,14 +2,22 @@
   <div class="task">
     <h2>{{ task.title }}</h2>
     <div class="icons">
-      <i class="material-icons">delete</i>
-      <i class="material-icons">favorite</i>
+      <i class="material-icons" @click="handleDeleteTask">delete</i>
+      <i
+        class="material-icons"
+        :class="{
+          'active-icon': task.isFav,
+        }"
+        @click="handleFavoriteTask"
+        >favorite</i
+      >
     </div>
   </div>
 </template>
 
 <script>
 import { defineComponent } from "vue";
+import { useTaskStore } from "../stores/Tasks";
 
 export default defineComponent({
   name: "TaskComponent",
@@ -21,8 +29,21 @@ export default defineComponent({
     },
   },
 
-  setup() {
-    return {};
+  setup(props) {
+    const taskStore = useTaskStore();
+
+    const handleDeleteTask = () => {
+      taskStore.deleteTask(props.task.id);
+    };
+
+    const handleFavoriteTask = () => {
+      taskStore.favoriteTask(props.task.id);
+    };
+
+    return {
+      handleDeleteTask,
+      handleFavoriteTask,
+    };
   },
 });
 </script>
@@ -45,13 +66,18 @@ export default defineComponent({
 
   .icons {
     text-align: right;
-  }
 
-  i {
-    font-size: 1.4em;
-    margin-left: 6px;
-    cursor: pointer;
-    color: #bbb;
+    i {
+      font-size: 1.4em;
+      margin-left: 6px;
+      cursor: pointer;
+      color: #bbb;
+    }
   }
+}
+
+.active-icon {
+  color: #ff005d !important;
+  transition: all 0.2s ease-in-out;
 }
 </style>

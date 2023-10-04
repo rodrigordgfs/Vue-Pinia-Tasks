@@ -5,31 +5,43 @@
       <h1>Pinia Tasks</h1>
     </header>
 
+    <div class="new-task-form">
+      <TaskForm />
+    </div>
+
     <nav class="filter">
-      <button @click="handleAllTasks">All Tasks</button>
-      <button @click="handleFavoritesTasks">Favorites Tasks</button>
+      <button
+        :class="{
+          'active-button': filter === 'all',
+        }"
+        @click="handleAllTasks"
+      >
+        All Tasks
+      </button>
+      <button
+        :class="{
+          'active-button': filter === 'favorites',
+        }"
+        @click="handleFavoritesTasks"
+      >
+        Favorites Tasks
+      </button>
     </nav>
 
-    <div
-      class="task-list"
-      :class="{
-        active: filter === 'all',
-      }"
-      v-if="filter === 'all'"
-    >
+    <div class="task-list" v-if="filter === 'all'">
       <p>You have {{ taskStore.getTotalCount }} tasks left to do</p>
       <Task v-for="task in taskStore.tasks" :key="task.id" :task="task" />
     </div>
 
-    <div
-      class="task-list"
-      :class="{
-        active: filter === 'favorites',
-      }"
-      v-if="filter === 'favorites'"
-    >
-    <p>You have {{ taskStore.getFavoritesCount }} tasks favorites left to do</p>
-      <Task v-for="task in taskStore.getFavorites" :key="task.id" :task="task" />
+    <div class="task-list" v-if="filter === 'favorites'">
+      <p>
+        You have {{ taskStore.getFavoritesCount }} tasks favorites left to do
+      </p>
+      <Task
+        v-for="task in taskStore.getFavorites"
+        :key="task.id"
+        :task="task"
+      />
     </div>
   </main>
 </template>
@@ -38,12 +50,14 @@
 import { defineComponent, ref } from "vue";
 import { useTaskStore } from "./stores/Tasks";
 import Task from "./components/Task.vue";
+import TaskForm from "./components/TaskForm.vue";
 
 export default defineComponent({
   name: "App",
 
   components: {
     Task,
+    TaskForm,
   },
 
   setup() {
@@ -120,11 +134,16 @@ header {
       color: #fff;
       transition: all 0.2s ease-in-out;
     }
-
-    .active {
-      background: #555;
-      color: #fff;
-    }
   }
+}
+
+.active-button {
+  background: #555 !important;
+  color: #fff !important;
+}
+
+.new-task-form {
+  background: #e7e7e7;
+  padding: 20px 0;
 }
 </style>
