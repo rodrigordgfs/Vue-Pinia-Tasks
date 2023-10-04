@@ -28,22 +28,16 @@
       </button>
     </nav>
 
-    <div class="loading" v-if="taskStore.isLoading">Loading Tansks ...</div>
+    <div class="loading" v-if="isLoading">Loading Tansks ...</div>
 
-    <div class="task-list" v-if="filter === 'all' && !taskStore.isLoading">
-      <p>You have {{ taskStore.getTotalCount }} tasks left to do</p>
-      <Task v-for="task in taskStore.tasks" :key="task.id" :task="task" />
+    <div class="task-list" v-if="filter === 'all' && !isLoading">
+      <p>You have {{ getTotalCount }} tasks left to do</p>
+      <Task v-for="task in getTasks" :key="task.id" :task="task" />
     </div>
 
-    <div class="task-list" v-if="filter === 'favorites' && !taskStore.isLoading">
-      <p>
-        You have {{ taskStore.getFavoritesCount }} tasks favorites left to do
-      </p>
-      <Task
-        v-for="task in taskStore.getFavorites"
-        :key="task.id"
-        :task="task"
-      />
+    <div class="task-list" v-if="filter === 'favorites' && !isLoading">
+      <p>You have {{ getFavoritesCount }} tasks favorites left to do</p>
+      <Task v-for="task in getFavorites" :key="task.id" :task="task" />
     </div>
   </main>
 </template>
@@ -51,6 +45,7 @@
 <script>
 import { defineComponent, ref, onMounted } from "vue";
 import { useTaskStore } from "./stores/Tasks";
+import { storeToRefs } from "pinia";
 import Task from "./components/Task.vue";
 import TaskForm from "./components/TaskForm.vue";
 
@@ -64,6 +59,14 @@ export default defineComponent({
 
   setup() {
     const taskStore = useTaskStore();
+
+    const {
+      isLoading,
+      getTasks,
+      getFavorites,
+      getTotalCount,
+      getFavoritesCount,
+    } = storeToRefs(taskStore);
 
     const filter = ref("all");
 
@@ -80,10 +83,14 @@ export default defineComponent({
     });
 
     return {
-      taskStore,
       filter,
       handleAllTasks,
       handleFavoritesTasks,
+      isLoading,
+      getTasks,
+      getFavorites,
+      getTotalCount,
+      getFavoritesCount,
     };
   },
 });
