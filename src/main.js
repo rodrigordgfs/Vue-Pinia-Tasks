@@ -1,4 +1,5 @@
 import './styles/reset.css'
+import './styles/main.css'
 
 import { createApp } from 'vue'
 import App from './App.vue'
