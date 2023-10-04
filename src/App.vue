@@ -7,7 +7,7 @@
     <Filter
       :filter="filter"
       :handleAllTasks="handleAllTasks"
-      :handleFavoritesTasks="handleFavoritesTasks"
+      :handleCompletedsTasks="handleCompletedsTasks"
     />
 
     <div class="loading" v-if="isLoading">Loading Tansks ...</div>
@@ -17,9 +17,9 @@
       <Task v-for="task in getTasks" :key="task.id" :task="task" />
     </div>
 
-    <div class="task-list" v-if="filter === 'favorites' && !isLoading">
-      <p>You have {{ getFavoritesCount }} tasks favorites left to do</p>
-      <Task v-for="task in getFavorites" :key="task.id" :task="task" />
+    <div class="task-list" v-if="filter === 'completeds' && !isLoading">
+      <p>You have {{ getCompletedsCount }} tasks completeds left to do</p>
+      <Task v-for="task in getCompleteds" :key="task.id" :task="task" />
     </div>
   </main>
 </template>
@@ -49,9 +49,9 @@ export default defineComponent({
     const {
       isLoading,
       getTasks,
-      getFavorites,
+      getCompleteds,
       getTotalCount,
-      getFavoritesCount,
+      getCompletedsCount,
     } = storeToRefs(taskStore);
 
     const filter = ref("all");
@@ -60,8 +60,8 @@ export default defineComponent({
       filter.value = "all";
     };
 
-    const handleFavoritesTasks = () => {
-      filter.value = "favorites";
+    const handleCompletedsTasks = () => {
+      filter.value = "completeds";
     };
 
     onMounted(() => {
@@ -71,12 +71,12 @@ export default defineComponent({
     return {
       filter,
       handleAllTasks,
-      handleFavoritesTasks,
+      handleCompletedsTasks,
       isLoading,
       getTasks,
-      getFavorites,
+      getCompleteds,
       getTotalCount,
-      getFavoritesCount,
+      getCompletedsCount,
     };
   },
 });

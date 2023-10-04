@@ -1,15 +1,15 @@
 <template>
   <div class="task">
-    <h2>{{ task.title }}</h2>
+    <h2>{{ task.todo }}</h2>
     <div class="icons">
       <i class="material-icons" @click="handleDeleteTask">delete</i>
       <i
         class="material-icons"
         :class="{
-          'active-icon': task.isFav,
+          'active-icon': task.completed,
         }"
-        @click="handleFavoriteTask"
-        >favorite</i
+        @click="handleCompleteTask"
+        >check_circle</i
       >
     </div>
   </div>
@@ -36,13 +36,13 @@ export default defineComponent({
       taskStore.deleteTask(props.task.id);
     };
 
-    const handleFavoriteTask = () => {
-      taskStore.favoriteTask(props.task.id);
+    const handleCompleteTask = () => {
+      taskStore.completeTask(props.task);
     };
 
     return {
       handleDeleteTask,
-      handleFavoriteTask,
+      handleCompleteTask,
     };
   },
 });
@@ -84,7 +84,7 @@ export default defineComponent({
 }
 
 .active-icon {
-  color: #ff005d !important;
+  color: #32CD32 !important;
   transition: all 0.2s ease-in-out;
 }
 </style>

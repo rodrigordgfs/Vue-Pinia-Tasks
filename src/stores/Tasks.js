@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { v4 as uuidv4 } from "uuid";
+import services from "../services";
 
 export const useTaskStore = defineStore("taskStore", {
   state: () => ({
@@ -11,14 +11,16 @@ export const useTaskStore = defineStore("taskStore", {
       return this.tasks;
     },
 
-    getFavorites() {
-      return this.tasks.filter((t) => t.isFav);
+    getCompleteds() {
+      return this.tasks.filter((t) => t.completed);
     },
-    getFavoritesCount() {
+
+    getCompletedsCount() {
       return this.tasks.reduce((p, c) => {
-        return c.isFav ? p + 1 : p;
+        return c.completed ? p + 1 : p;
       }, 0);
     },
+
     getTotalCount: (state) => {
       return state.tasks.length;
     },
@@ -26,49 +28,39 @@ export const useTaskStore = defineStore("taskStore", {
   actions: {
     async getTaks() {
       this.isLoading = true;
-      const response = await fetch("http://localhost:9999/tasks");
-      const data = await response.json();
-      this.tasks = data;
+      const { data } = await services.todo.getAll();
+      this.tasks = data.todos;
       this.isLoading = false;
     },
 
-    async addTask(title) {
+    async addTask(todo) {
       const body = {
-        id: uuidv4(),
-        title,
-        isFav: false,
+        todo,
+        completed: false,
+        userId: 5,
       };
-      const response = await fetch("http://localhost:9999/tasks", {
-        method: "POST",
-        body: JSON.stringify(body),
-        headers: { "Content-Type": "application/json" },
-      });
-      if (response.status === 201) {
-        this.tasks.push(body);
+      const { data } = await services.todo.insert(body);
+      if (data) {
+        this.tasks.push({
+          ...body,
+          id: data.id
+        });
       }
     },
 
-    async favoriteTask(id) {
-      const response = await fetch(`http://localhost:9999/tasks/${id}`, {
-        method: "PATCH",
-        body: JSON.stringify({
-          isFav: !this.tasks.find((t) => t.id === id).isFav,
-        }),
-        headers: { "Content-Type": "application/json" },
-      });
-      if (response.status === 200) {
-        const task = this.tasks.find((t) => t.id === id);
-        task.isFav = !task.isFav;
+    async completeTask(task) {
+      const { data } = await services.todo.update(task)
+      console.log(data);
+      if (data) {
+        await this.getTaks();
       }
     },
 
     async deleteTask(id) {
-      const response = await fetch(`http://localhost:9999/tasks/${id}`, {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-      });
-      if (response.status === 200) {
-        this.tasks = this.tasks.filter((t) => t.id !== id);
+      const { data } = await services.todo.delete(id)
+      console.log(data);
+      if (data) {
+        await this.getTaks();
       }
     },
   },

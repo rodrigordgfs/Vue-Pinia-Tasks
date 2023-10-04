@@ -10,11 +10,11 @@
     </button>
     <button
       :class="{
-        'active-button': filter === 'favorites',
+        'active-button': filter === 'completeds',
       }"
-      @click="handleFavoritesTasks"
+      @click="handleCompletedsTasks"
     >
-      Favorites Tasks
+      Completeds Tasks
     </button>
   </nav>
 </template>
@@ -34,7 +34,7 @@ export default defineComponent({
       type: Function,
       required: true,
     },
-    handleFavoritesTasks: {
+    handleCompletedsTasks: {
       type: Function,
       required: true,
     },
