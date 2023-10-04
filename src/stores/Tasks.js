@@ -1,5 +1,8 @@
 import { defineStore } from "pinia";
 import services from "../services";
+import { useToast } from "vue-toastification";
+
+const toast = useToast()
 
 export const useTaskStore = defineStore("taskStore", {
   state: () => ({
@@ -41,6 +44,7 @@ export const useTaskStore = defineStore("taskStore", {
       };
       const { data } = await services.todo.insert(body);
       if (data) {
+        toast.success("Task added successfully");
         this.tasks.push({
           ...body,
           id: data.id
@@ -52,6 +56,7 @@ export const useTaskStore = defineStore("taskStore", {
       const { data } = await services.todo.update(task)
       console.log(data);
       if (data) {
+        toast.success("Task completed successfully");
         await this.getTaks();
       }
     },
@@ -60,6 +65,7 @@ export const useTaskStore = defineStore("taskStore", {
       const { data } = await services.todo.delete(id)
       console.log(data);
       if (data) {
+        toast.success("Task deleted successfully");
         await this.getTaks();
       }
     },
