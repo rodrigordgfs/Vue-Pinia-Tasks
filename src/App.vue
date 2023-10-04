@@ -28,12 +28,14 @@
       </button>
     </nav>
 
-    <div class="task-list" v-if="filter === 'all'">
+    <div class="loading" v-if="taskStore.isLoading">Loading Tansks ...</div>
+
+    <div class="task-list" v-if="filter === 'all' && !taskStore.isLoading">
       <p>You have {{ taskStore.getTotalCount }} tasks left to do</p>
       <Task v-for="task in taskStore.tasks" :key="task.id" :task="task" />
     </div>
 
-    <div class="task-list" v-if="filter === 'favorites'">
+    <div class="task-list" v-if="filter === 'favorites' && !taskStore.isLoading">
       <p>
         You have {{ taskStore.getFavoritesCount }} tasks favorites left to do
       </p>
@@ -47,7 +49,7 @@
 </template>
 
 <script>
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, onMounted } from "vue";
 import { useTaskStore } from "./stores/Tasks";
 import Task from "./components/Task.vue";
 import TaskForm from "./components/TaskForm.vue";
@@ -72,6 +74,10 @@ export default defineComponent({
     const handleFavoritesTasks = () => {
       filter.value = "favorites";
     };
+
+    onMounted(() => {
+      taskStore.getTaks();
+    });
 
     return {
       taskStore,
@@ -104,6 +110,7 @@ header {
     margin-left: 15px;
     color: #777;
     transform: rotate(2deg);
+    font-weight: 600;
   }
 }
 
@@ -145,5 +152,15 @@ header {
 .new-task-form {
   background: #e7e7e7;
   padding: 20px 0;
+}
+
+.loading {
+  max-width: 640px;
+  border: 1px solid #ffd859;
+  background: #ffe9a0;
+  color: #3a3a3a;
+  padding: 5px 0;
+  text-align: center;
+  margin: 30px auto;
 }
 </style>

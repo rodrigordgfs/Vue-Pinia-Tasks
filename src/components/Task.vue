@@ -59,9 +59,16 @@ export default defineComponent({
   justify-content: space-between;
   align-items: center;
 
-  h3,
+  h2 {
+    font-weight: 600;
+  }
+
+  h2,
   .icons {
-    display: inline-block;
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    align-items: center;
   }
 
   .icons {
